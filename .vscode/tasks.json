@@ -1,0 +1,19 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "dotnet: build",
+            "command": "dotnet build",            
+            "detail": "dotnet build",
+            "type": "shell",
+            "group": "build"
+        },
+        {
+            "label": "dotnet: test",
+            "command": "dotnet test",            
+            "detail": "dotnet test",
+            "type": "shell",
+            "group": "test"
+        }
+    ]
+}

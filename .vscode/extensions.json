@@ -1,0 +1,6 @@
+{
+    "recommendations": [
+        "ms-dotnettools.csharp",
+        "amazonwebservices.aws-toolkit-vscode"
+    ]
+}

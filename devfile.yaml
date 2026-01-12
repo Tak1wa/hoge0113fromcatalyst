@@ -1,0 +1,45 @@
+schemaVersion: 2.0.0
+metadata:
+  name: aws-universal
+  version: 1.0.1
+  displayName: AWS Universal
+  description: Stack with AWS Universal Tooling
+  tags:
+    - aws
+    - a12
+  projectType: aws
+components:
+  - name: aws-runtime
+    container:
+      image: public.ecr.aws/aws-mde/universal-image:3.0
+      mountSources: true
+      volumeMounts:
+        - name: docker-store
+          path: /var/lib/docker
+  - name: docker-store
+    volume:
+      size: 16Gi
+events:
+  postStart:
+    - install-dotnet-8
+    - build-and-test
+    - install-deploy-tools
+commands:
+  - id: install-dotnet-8
+    exec:
+      commandLine: curl -sSL https://dot.net/v1/dotnet-install.sh | sudo bash
+        /dev/stdin --channel 8.0 --install-dir /usr/share/dotnet
+      workingDir: $PROJECT_SOURCE
+      component: aws-runtime
+  - id: build-and-test
+    exec:
+      commandLine: 'dotnet build ServerlessApp.sln -c Release && dotnet test
+        #SOLUTION_FILE# -c Release --no-build --logger "trx"'
+      workingDir: $PROJECT_SOURCE
+      component: aws-runtime
+  - id: install-deploy-tools
+    exec:
+      commandLine: sudo yum -y install zip && sudo dotnet tool install
+        Amazon.Lambda.Tools --global --version 5.*
+      workingDir: $PROJECT_SOURCE
+      component: aws-runtime
